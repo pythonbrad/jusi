@@ -16,7 +16,7 @@
   	</div>
     </div>
   </article>
-  <hr class="my-5">
+  <hr class="my-2">
   <div class="content">
     <p>{{content}}</p>
   </div>
@@ -25,14 +25,14 @@
   <button class="button is-fullwidth" data-is-correct="{{is_correct}}">{{choice}}</button><br>
 </template>
 <template id="match">
-  <div class="columns is-mobile">
+  <div class="columns">
     <div class="column is-half">
-      <button class="button is-fullwidth is-large" data-match-id="{{match_left_id}}">
+      <button class="button is-fullwidth is-medium" data-match-id="{{match_left_id}}">
         {{match_left}}
       </button>
     </div>
     <div class="column is-half">
-      <button class="button is-fullwidth is-large" data-match-id="{{match_right_id}}">
+      <button class="button is-fullwidth is-medium" data-match-id="{{match_right_id}}">
         {{match_right}}
       </button>
     </div>
@@ -43,7 +43,11 @@
     <div class="level-item has-text-centered">
       <div>
         <p><i class="fa fa-2x fa-{{icon}}"></i></p>
-        <p class="subtitle">{{message}}</p>
+        <p class="subtitle"><b>{{message}}</b></p><br>
+          <div class="content">
+            {{help}}
+          </div>
+        </p>
       </div>
     </div>
   </div>
@@ -56,8 +60,15 @@
 
 <script type="text/javascript">
   $(() => {
+    var success_messages = ['Great job!', 'You did it'];
+    var failure_messages = ['Believe in yourself', 'Practice makes perfect.', 'Not quite'];
+
+    function choice(data) {
+      return data[parseInt(Math.random() * data.length)];
+    }
+
     var $page = $('#page');
-    var $foot = $('#custom-foot #content');
+    var $foot = $('#custom-foot');
 
     var article_html = $('template#article').html();
     var action_html = $('template#foot').html();
@@ -88,6 +99,7 @@
       $next.hide();
 
       if (exercise.choices?.length) {
+        exercise.choices.sort(() => Math.random());
         exercise.choices.forEach((choice, choice_id) => {
           $page.append(
             choice_html
@@ -96,21 +108,23 @@
           );
         });
 
-        $('#page button').on('click', (el) => {
+        $page.find('button').on('click', (el) => {
           $choice = $(el.target);
           $choice.addClass($choice.data('is-correct') ? 'is-primary' : 'is-danger');
           
           $page.append(
             correct_answer_html
-            .replace('{{icon}}', $choice.data('is-correct') ? 'check-circle' : 'close')
-            .replace('{{message}}', $choice.data('is-correct') ? 'Great job!' : 'Believe in yourself')
+            .replace('{{icon}}', $choice.data('is-correct') ? 'check-circle' : 'times-circle')
+            .replace('{{message}}', $choice.data('is-correct') ? choice(success_messages) : choice(failure_messages))
+            .replace('{{help}}', $choice.data('is-correct') ? '' : marked.parse(exercise.help || ''))
           );
 
-          $('#page button').attr('disabled', '');
+          $page.find('button').attr('disabled', '');
 
           $next.show();
         });
       } else if (exercise.matches?.length) {
+        exercise.matches.sort(() => Math.random());
         for (var match_id=0; match_id < exercise.matches.length; match_id+=2) {
           $page.append(
             match_html
@@ -121,18 +135,18 @@
           );
         }
 
-        $('#page button').on('click', (el) => {
+        $page.find('button').on('click', (el) => {
           var active_color = 'is-info';
           var success_color = 'is-success';
           var error_color = 'is-danger';
 
           // We clear the previous errors
-          $('#page button.' + error_color).removeClass(error_color);
+          $page.find('button.' + error_color).removeClass(error_color);
           
           $match = $(el.target);
           $match.addClass(active_color);
 
-          $matches = $('#page button.' + active_color);
+          $matches = $page.find('button.' + active_color);
           
           if ($matches.length < 2) return;
           
@@ -147,12 +161,13 @@
           
           if (correct_matches) $matches.attr('disabled', '');
 
-          if ($('#page button:not(.'+success_color+')').length) return;
+          if ($page.find('button:not(.'+success_color+')').length) return;
 
           $page.append(
             correct_answer_html
-            .replace('{{icon}}', correct_matches ? 'check-circle' : 'close')
-            .replace('{{message}}', correct_matches ? 'Great job!' : 'Believe in yourself')
+            .replace('{{icon}}', correct_matches ? 'check-circle' : 'times-circle')
+            .replace('{{message}}', correct_matches ? choice(success_messages) : choice(failure_messages))
+            .replace('{{help}}', correct_matches ? '' : marked.parse(exercise.help || ''))
           );
 
           $next.show();
@@ -160,9 +175,9 @@
       }
     };
 
-    $foot.html(action_html);
+    $foot.find('#content').html(action_html);
 
-    $('#custom-foot .button').on('click', (el) => next($(el.target)));
+    $foot.find('.button').on('click', (el) => next($(el.target)));
     
     next();
 

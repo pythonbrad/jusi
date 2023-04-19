@@ -15,13 +15,14 @@ App = {
 		},
 		error: () => {
 			$('#main').empty();
-			$('#main').html('\
-				<div class="splash" align="center">\
-					<i class="fa fa-4x fa-warning"></i>\
-					<span class="title is-5">Unexpected error occurred.</span>\
-					<i class="subtitle is-size-7">If the issue persists, please contact the webmaster at contact@resulam.com</i>\
-					<hr>\
-				</div>');
+			$('#main').html(
+				'<div class="splash" align="center">'+
+				'	<i class="fa fa-4x fa-warning"></i>'+
+				'	<span class="title is-5">Unexpected error occurred.</span>'+
+				'	<i class="subtitle is-size-7">If the issue persists, please contact the webmaster at contact@resulam.com</i>'+
+				'	<hr>'+
+				'</div>'
+			);
 			$('#splash').hide();
 			$('#main').show();
 		},
@@ -79,7 +80,7 @@ App = {
 										"**The IPA symbol /æ/ represents the sounds you "+
 										"hear. You don't have to memorise the symbol, but you "+
 										"will see it a few times in this lesson.**\n\n"+
-										"**[VIDEO]**\n\n"+
+										"![FRAME](https://www.youtube.com/embed/YE7VzlLtp-4)\n\n"+
 										"`man, and`",
 									},
 									{
@@ -95,7 +96,7 @@ App = {
 									{
 										content:
 										"**Listen to the sound. We will learn how to produce it shortly.**\n\n"+
-										"**[VIDEO]**\n\n"+
+										"![FRAME](https://www.youtube.com/embed/YE7VzlLtp-4)\n\n"+
 										"**/æ/**\n\n"+
 										"**EXAMPLE**\n\n"+
 										"`🔊 sad, man, plan, cat, and`"
@@ -103,9 +104,10 @@ App = {
 									{
 										content:
 										"**Listen to the audio. Which word do ou hear? Try to make the sound yourself.**\n\n"+
-										"**[AUDIO]**\n\n",
+										"![AUDIO](https://samplelib.com/lib/preview/mp3/sample-3s.mp3)\n\n",
 										choices: ["men", "man", "mane"],
 										answers: [0],
+										help: "`men`"
 									},
 									{
 										content:
@@ -149,6 +151,39 @@ App = {
 										matches: ['plan, sad', '/æ/ sound', 'plane, said', 'different vowel sound'],
 										answers: [[0, 3], [1, 2]]
 									},
+									{
+										content:
+										"**Listen to the audio. Which word do ou hear? Try to make the sound yourself.**\n\n"+
+										"![AUDIO](https://samplelib.com/lib/preview/mp3/sample-3s.mp3)\n\n",
+										choices: ["plane", "plan", "pan"],
+										answers: [1],
+										help: "`plan`"
+									},
+									{
+										content:
+										"`man, main`\n\n"+
+										"These two words contain the same vowel sound.\n\n"+
+										"![AUDIO](https://samplelib.com/lib/preview/mp3/sample-3s.mp3)\n\n",
+										choices: ["True", "False"],
+										answers: [1],
+										help: "\"Man\" contains the /æ/ vowel sound like in \"and\", but \"main\" "+
+										"contains a different vowel sound."
+									},
+									{
+										content:
+										"**True or false?**\n\n"+
+										"![VIDEO](https://samplelib.com/lib/preview/mp4/sample-5s.mp4)\n\n"+
+										"I have a brown **cat**\n\n"+
+										"The words \"cat\" contains the /æ/ vowel sound like in \"and\".",
+										choices: ["True", "False"],
+										answers: [1],
+									},
+									{
+										content:
+										"**Keep going!**\n\n"+
+										"In the second part of his lesson, we are going to practise recognising the /æ/ vowel sound "+
+										"(\"m**a**n\", \"**a**nd\") in different words and phrases.",
+									},
 								]
 							}
 						]
@@ -170,6 +205,28 @@ $(() => {
 	// We init the view state
 	$('#splash').hide();
 	$('#main').show();
+
+	const renderer = {
+		image(href, title, text) {
+			text = text.toLowerCase();
+			return (text === 'frame') ? 
+			`<figure class="image is-16by9">
+				<iframe class="has-ratio" width="640" height="360" src="${href}" frameborder="0" allowfullscreen></iframe>
+			</figure>` : ['audio', 'video'].includes(text) ? 
+			`<figure>
+				<${text} style="width: 100%" controls="" src="${href}"></${text}>
+			</figure> ` : 
+			`<figure class="image is-128x128 is-inline-block">
+				<img src="${href}" alt="${text}">
+			</figure>`;
+		},
+		paragraph(text) {
+			return `<div class="content has-text-centered"><span>${text}</span></div>`;
+		}
+	};
+
+	marked.use({ sanitize: DOMPurify.sanitize });
+	marked.use({ renderer });
 
 	// We load the final splash
 	$('#splash').load(STATIC_ROOT+'templates/splash.html', () => {
