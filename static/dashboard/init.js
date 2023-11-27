@@ -17,8 +17,8 @@ App = {
 			$('#main').empty();
 			$('#main').html(
 				'<div class="splash" align="center">'+
-				'	<i class="fa fa-4x fa-warning"></i>'+
-				'	<span class="title is-5">Unexpected error occurred.</span>'+
+				'	<i class="fa fa-4x fa-warning"></i><br>'+
+				'	<span class="title is-5">Unexpected error occurred.</span><br>'+
 				'	<i class="subtitle is-size-7">If the issue persists, please contact the webmaster at contact@resulam.com</i>'+
 				'	<hr>'+
 				'</div>'
