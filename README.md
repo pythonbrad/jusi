@@ -1,27 +1,31 @@
 # Jusi
+
 LOGO
 
 ## Features
+
 TODO
 
-----
+---
 
 ## Table of Contents
-* **[Installation](#installation)**
-  * [Pip](#pip)
-  * [Pipenv](#pipenv)
-  * [Maintenance mode](#maintenance-mode)
-  * [Docker](#docker)
-* [Next Steps](#next-steps)
-* [Contributing](#contributing)
-* [Support](#support)
-* [License](#license)
 
-----
+- **[Installation](#installation)**
+  - [Pip](#pip)
+  - [Pipenv](#pipenv)
+  - [Maintenance mode](#maintenance-mode)
+  - [Docker](#docker)
+- [Next Steps](#next-steps)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
+
+---
 
 ## Installation
+
 Jusi can be installed via Pip, Pipenv, or Docker. To start, clone the repo to your local computer and change into the proper directory.
-*NB:* We provide the [raw version](requirements_raw.txt) of the requirements.txt file.
+_NB:_ We provide the [raw version](requirements_raw.txt) of the requirements.txt file.
 
 ```
 $ git clone https://github.com/pythonbrad/jusi.git

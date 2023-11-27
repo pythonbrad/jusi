@@ -1,3 +1,75 @@
-<h1 class="title is-4">English Pronunciation</h1>
-<h2 class="title is-5">The Sounds of English</h2>
-<progress class="progress is-danger" value="0" max="100"></progress>
+<template id="unit" hidden>
+  <p class="title is-4">{{unit}}</p>
+</template>
+<template id="chapter" hidden>
+  <p class="title is-5">{{chapter}}</p>
+  <progress class="progress" value="{{progress}}" max="100"></progress>
+</template>
+<template id="lesson" hidden>
+  <div class="card">
+    <div class="card-content">
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+            <img class="" src="{{img_url}}" alt="Image" />
+          </figure>
+        </div>
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong>{{lesson}}</strong>
+              <br />
+              {{description}}
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+    <footer class="card-footer">
+      <a
+        href="#!"
+        class="button is-dark card-footer-item"
+        onclick="App.views.lesson({{chapter_id}}, {{lesson_id}})"
+        >Let's go!</a
+      >
+    </footer>
+  </div>
+  <br />
+</template>
+
+<div id="page"></div>
+
+<script type="text/javascript">
+  $(() => {
+    var unit_html = $("template#unit").html();
+    var chapter_html = $("template#chapter").html();
+    var lesson_html = $("template#lesson").html();
+    var $page = $("#page");
+
+    var unit = App.models.units[App.data.curr_unit];
+
+    $page.append(unit_html.replace("{{unit}}", unit.title));
+
+    unit.chapters.forEach((chapter, chapter_id) => {
+      $page.append("<hr>");
+      $page.append(
+        chapter_html
+          .replace("{{chapter}}", chapter.title)
+          .replace("{{progress}}", chapter.progress),
+      );
+
+      chapter.lessons.forEach((lesson, lesson_id) => {
+        $page.append(
+          lesson_html
+            .replace("{{lesson}}", lesson.title)
+            .replace("{{description}}", lesson.description)
+            .replace("{{img_url}}", lesson.img_url)
+            .replace("{{chapter_id}}", chapter_id)
+            .replace("{{lesson_id}}", lesson_id),
+        );
+      });
+    });
+
+    App.views.splash();
+  });
+</script>
