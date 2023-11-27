@@ -11,14 +11,14 @@
       <article class="media">
         <div class="media-left">
           <figure class="image is-64x64">
-            <img class="" src="{{img_url}}" alt="Image">
+            <img class="" src="{{img_url}}" alt="Image" />
           </figure>
         </div>
         <div class="media-content">
           <div class="content">
             <p>
               <strong>{{lesson}}</strong>
-              <br>
+              <br />
               {{description}}
             </p>
           </div>
@@ -26,9 +26,15 @@
       </article>
     </div>
     <footer class="card-footer">
-      <a href="#!" class="button is-dark card-footer-item" onclick="App.views.lesson({{chapter_id}}, {{lesson_id}})">Let's go!</a>
+      <a
+        href="#!"
+        class="button is-dark card-footer-item"
+        onclick="App.views.lesson({{chapter_id}}, {{lesson_id}})"
+        >Let's go!</a
+      >
     </footer>
-  </div><br>
+  </div>
+  <br />
 </template>
 
 <div id="page"></div>
@@ -42,27 +48,24 @@
 
     var unit = App.models.units[App.data.curr_unit];
 
-    $page.append(
-      unit_html
-      .replace("{{unit}}", unit.title)
-    );
+    $page.append(unit_html.replace("{{unit}}", unit.title));
 
     unit.chapters.forEach((chapter, chapter_id) => {
       $page.append("<hr>");
       $page.append(
         chapter_html
-        .replace("{{chapter}}", chapter.title)
-        .replace("{{progress}}", chapter.progress)
+          .replace("{{chapter}}", chapter.title)
+          .replace("{{progress}}", chapter.progress),
       );
 
       chapter.lessons.forEach((lesson, lesson_id) => {
         $page.append(
           lesson_html
-          .replace("{{lesson}}", lesson.title)
-          .replace("{{description}}", lesson.description)
-          .replace("{{img_url}}", lesson.img_url)
-          .replace("{{chapter_id}}", chapter_id)
-          .replace("{{lesson_id}}", lesson_id)
+            .replace("{{lesson}}", lesson.title)
+            .replace("{{description}}", lesson.description)
+            .replace("{{img_url}}", lesson.img_url)
+            .replace("{{chapter_id}}", chapter_id)
+            .replace("{{lesson_id}}", lesson_id),
         );
       });
     });

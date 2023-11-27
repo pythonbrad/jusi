@@ -2,8 +2,8 @@
   <article class="media">
     <div class="media-left">
       <div class="content has-text-centered">
-  		<i class="fa fa-2x fa-info-circle"></i>
-  	</div>
+        <i class="fa fa-2x fa-info-circle"></i>
+      </div>
     </div>
     <div class="media-content pt-2">
       <div class="content">
@@ -12,27 +12,35 @@
     </div>
     <div class="media-right">
       <div class="content has-text-centered">
-  		<i class="fa fa-2x fa-close"></i>
-  	</div>
+        <i class="fa fa-2x fa-close"></i>
+      </div>
     </div>
   </article>
-  <hr class="my-2">
+  <hr class="my-2" />
   <div class="content">
     <p>{{content}}</p>
   </div>
 </template>
 <template id="choice">
-  <button class="button is-fullwidth" data-is-correct="{{is_correct}}">{{choice}}</button><br>
+  <button class="button is-fullwidth" data-is-correct="{{is_correct}}">
+    {{choice}}</button
+  ><br />
 </template>
 <template id="match">
   <div class="columns">
     <div class="column is-half">
-      <button class="button is-fullwidth is-medium" data-match-id="{{match_left_id}}">
+      <button
+        class="button is-fullwidth is-medium"
+        data-match-id="{{match_left_id}}"
+      >
         {{match_left}}
       </button>
     </div>
     <div class="column is-half">
-      <button class="button is-fullwidth is-medium" data-match-id="{{match_right_id}}">
+      <button
+        class="button is-fullwidth is-medium"
+        data-match-id="{{match_right_id}}"
+      >
         {{match_right}}
       </button>
     </div>
@@ -42,12 +50,13 @@
   <div class="level">
     <div class="level-item has-text-centered">
       <div>
-        <p><i class="fa fa-2x fa-{{icon}}"></i></p>
-        <p class="subtitle"><b>{{message}}</b></p><br>
-          <div class="content">
+        <div class="content">
+          <p><i class="fa fa-2x fa-{{icon}}"></i></p>
+          <p class="subtitle">
+            <b>{{message}}</b><br />
             {{help}}
-          </div>
-        </p>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -60,23 +69,29 @@
 
 <script type="text/javascript">
   $(() => {
-    var success_messages = ['Great job!', 'You did it'];
-    var failure_messages = ['Believe in yourself', 'Practice makes perfect.', 'Not quite'];
+    var success_messages = ["Great job!", "You did it"];
+    var failure_messages = [
+      "Believe in yourself",
+      "Practice makes perfect.",
+      "Not quite",
+    ];
 
     function choice(data) {
       return data[parseInt(Math.random() * data.length)];
     }
 
-    var $page = $('#page');
-    var $foot = $('#custom-foot');
+    var $page = $("#page");
+    var $foot = $("#custom-foot");
 
-    var article_html = $('template#article').html();
-    var action_html = $('template#foot').html();
-    var choice_html = $('template#choice').html();
-    var match_html = $('template#match').html();
-    var correct_answer_html = $('template#correct').html();
+    var article_html = $("template#article").html();
+    var action_html = $("template#foot").html();
+    var choice_html = $("template#choice").html();
+    var match_html = $("template#match").html();
+    var correct_answer_html = $("template#correct").html();
 
-    var exercises = App.models.units[App.data.curr_unit].chapters[App.data.curr_chapter].lessons[App.data.curr_lesson].exercises;
+    var exercises =
+      App.models.units[App.data.curr_unit].chapters[App.data.curr_chapter]
+        .lessons[App.data.curr_lesson].exercises;
     var exercise_id = 0;
 
     const next = ($next) => {
@@ -85,13 +100,13 @@
         return;
       }
 
-      var progress = parseInt((exercise_id + 1) / exercises.length * 100);
+      var progress = parseInt(((exercise_id + 1) / exercises.length) * 100);
       var exercise = exercises[exercise_id++];
 
       $page.html(
         article_html
-        .replace('{{progress}}', progress)
-        .replace('{{content}}', marked.parse(exercise.content))
+          .replace("{{progress}}", progress)
+          .replace("{{content}}", marked.parse(exercise.content)),
       );
 
       if (!exercise.answers?.length) return;
@@ -103,71 +118,102 @@
         exercise.choices.forEach((choice, choice_id) => {
           $page.append(
             choice_html
-            .replace('{{choice}}', choice)
-            .replace('{{is_correct}}', exercise.answers.includes(choice_id))
+              .replace("{{choice}}", choice)
+              .replace("{{is_correct}}", exercise.answers.includes(choice_id)),
           );
         });
 
-        $page.find('button').on('click', (el) => {
+        $page.find("button").on("click", (el) => {
           $choice = $(el.target);
-          $choice.addClass($choice.data('is-correct') ? 'is-primary' : 'is-danger');
-          
-          $page.append(
-            correct_answer_html
-            .replace('{{icon}}', $choice.data('is-correct') ? 'check-circle' : 'times-circle')
-            .replace('{{message}}', $choice.data('is-correct') ? choice(success_messages) : choice(failure_messages))
-            .replace('{{help}}', $choice.data('is-correct') ? '' : marked.parse(exercise.help || ''))
+          $choice.addClass(
+            $choice.data("is-correct") ? "is-primary" : "is-danger",
           );
 
-          $page.find('button').attr('disabled', '');
+          $page.append(
+            correct_answer_html
+              .replace(
+                "{{icon}}",
+                $choice.data("is-correct") ? "check-circle" : "times-circle",
+              )
+              .replace(
+                "{{message}}",
+                $choice.data("is-correct")
+                  ? choice(success_messages)
+                  : choice(failure_messages),
+              )
+              .replace(
+                "{{help}}",
+                $choice.data("is-correct")
+                  ? ""
+                  : marked.parse(exercise.help || ""),
+              ),
+          );
+
+          $page.find("button").attr("disabled", "");
 
           $next.show();
         });
       } else if (exercise.matches?.length) {
         exercise.matches.sort(() => Math.random());
-        for (var match_id=0; match_id < exercise.matches.length; match_id+=2) {
+        for (
+          var match_id = 0;
+          match_id < exercise.matches.length;
+          match_id += 2
+        ) {
           $page.append(
             match_html
-            .replace('{{match_left}}', exercise.matches[match_id])
-            .replace('{{match_left_id}}', match_id)
-            .replace('{{match_right}}', exercise.matches[match_id+1])
-            .replace('{{match_right_id}}', match_id+1)
+              .replace("{{match_left}}", exercise.matches[match_id])
+              .replace("{{match_left_id}}", match_id)
+              .replace("{{match_right}}", exercise.matches[match_id + 1])
+              .replace("{{match_right_id}}", match_id + 1),
           );
         }
 
-        $page.find('button').on('click', (el) => {
-          var active_color = 'is-info';
-          var success_color = 'is-success';
-          var error_color = 'is-danger';
+        $page.find("button").on("click", (el) => {
+          var active_color = "is-info";
+          var success_color = "is-success";
+          var error_color = "is-danger";
 
           // We clear the previous errors
-          $page.find('button.' + error_color).removeClass(error_color);
-          
+          $page.find("button." + error_color).removeClass(error_color);
+
           $match = $(el.target);
           $match.addClass(active_color);
 
-          $matches = $page.find('button.' + active_color);
-          
+          $matches = $page.find("button." + active_color);
+
           if ($matches.length < 2) return;
-          
+
           $matches.removeClass(active_color);
 
-          var correct_matches = exercise.answers.find((e) => 
-            e.includes($($matches[0]).data('match-id')) && 
-            e.includes($($matches[1]).data('match-id'))
+          var correct_matches = exercise.answers.find(
+            (e) =>
+              e.includes($($matches[0]).data("match-id")) &&
+              e.includes($($matches[1]).data("match-id")),
           );
 
           $matches.addClass(correct_matches ? success_color : error_color);
-          
-          if (correct_matches) $matches.attr('disabled', '');
 
-          if ($page.find('button:not(.'+success_color+')').length) return;
+          if (correct_matches) $matches.attr("disabled", "");
+
+          if ($page.find("button:not(." + success_color + ")").length) return;
 
           $page.append(
             correct_answer_html
-            .replace('{{icon}}', correct_matches ? 'check-circle' : 'times-circle')
-            .replace('{{message}}', correct_matches ? choice(success_messages) : choice(failure_messages))
-            .replace('{{help}}', correct_matches ? '' : marked.parse(exercise.help || ''))
+              .replace(
+                "{{icon}}",
+                correct_matches ? "check-circle" : "times-circle",
+              )
+              .replace(
+                "{{message}}",
+                correct_matches
+                  ? choice(success_messages)
+                  : choice(failure_messages),
+              )
+              .replace(
+                "{{help}}",
+                correct_matches ? "" : marked.parse(exercise.help || ""),
+              ),
           );
 
           $next.show();
@@ -175,13 +221,12 @@
       }
     };
 
-    $foot.find('#content').html(action_html);
+    $foot.find("#content").html(action_html);
 
-    $foot.find('.button').on('click', (el) => next($(el.target)));
-    
+    $foot.find(".button").on("click", (el) => next($(el.target)));
+
     next();
 
     App.views.splash();
   });
-
 </script>
